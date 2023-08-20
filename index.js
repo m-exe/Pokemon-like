@@ -133,6 +133,7 @@ function rectangularCollision({rectangle1, rectangle2}){
 const battle = {
     initiated: false,
 }
+
 function animate() {
     const animationID = window.requestAnimationFrame(animate);
     background.draw();
@@ -147,7 +148,6 @@ function animate() {
 
     let moving = true;
     player.animate = false;
-    console.log(animationID)
     if (battle.initiated) return
 
     //activate battle
@@ -161,9 +161,13 @@ function animate() {
                 rectangle1: player, rectangle2: BattleZone,}) && overlappingArea > player.width * player.height / 2
             && Math.random() < 0.01)
             {
-                console.log('active battle')
                 window.cancelAnimationFrame(animationID);
+
+                audio.Map.stop();
+                audio.initBattle.play();
+                audio.battle.play();
                 battle.initiated = true;
+
                 gsap.to('#overlappingDiv', {
                     opacity: 1,
                     repeat: 3,
@@ -174,6 +178,7 @@ function animate() {
                             opacity: 1,
                             duration: 0.4,
                             onComplete(){
+                                initBattle();
                                 animateBattle();
                                 gsap.to('#overlappingDiv', {
                                     opacity: 0,
@@ -228,7 +233,6 @@ function animate() {
                 }
             })
             ) {
-                console.log('colliding');
                 moving = false;
                 break;
             }
@@ -253,7 +257,6 @@ function animate() {
                 }
             })
             ) {
-                console.log('colliding');
                 moving = false;
                 break;
             }
@@ -278,7 +281,6 @@ function animate() {
                 }
             })
             ) {
-                console.log('colliding');
                 moving = false;
                 break;
             }
@@ -330,3 +332,11 @@ window.addEventListener('keyup', (e) => {
             break;
     }
 });
+
+let clicked = false;
+addEventListener('click', () => {
+    if (!clicked){
+        audio.Map.play();
+        clicked = true;
+    }
+})
